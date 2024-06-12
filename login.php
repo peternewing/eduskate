@@ -3,11 +3,11 @@ session_start();
 include 'database.php';
 
 if (isset($_POST['login_btn'])) {
-    $username = $link->real_escape_string($_POST['username']);
-    $password = $link->real_escape_string($_POST['password']);
+    $username = $conn->real_escape_string($_POST['username']);
+    $password = $conn->real_escape_string($_POST['password']);
 
     $query = "SELECT * FROM users WHERE username='$username'";
-    $result = $link->query($query);
+    $result = $conn->query($query);
 
     if ($result->num_rows == 1) {
         $user = $result->fetch_assoc();
@@ -22,7 +22,7 @@ if (isset($_POST['login_btn'])) {
     } else {
         $_SESSION['message'] = "Username and Password combination incorrect";
     }
-    $link->close();
+    $conn->close();
 }
 ?>
 
@@ -30,40 +30,31 @@ if (isset($_POST['login_btn'])) {
 <html>
 <head>
     <title>Login Form</title>
-    <link rel="stylesheet" type="text/css" href="style2.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <header>
-        <h1>Login Form</h1>
-        <nav>
-            <ul class="nav">
-                <li><a href="index.php">Home</a></li>
-                <li><a href="quiz.php">Quiz Creator</a></li>
-                <li><a href="register.php">Register</a></li>
-                <li><a href="login.php" class="active">Login</a></li>
-                <li><a href="logout.php">Log Out</a></li>
-                <li><a href="profile.php">Profile</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
+    <?php include 'header.php'; ?>
+    <main class="container my-4">
+        <h2>Login Form</h2>
         <form method="post" action="login.php">
-            <div>
+            <div class="form-group">
                 <label>Username:</label>
-                <input type="text" name="username" required>
+                <input type="text" name="username" class="form-control" required>
             </div>
-            <div>
+            <div class="form-group">
                 <label>Password:</label>
-                <input type="password" name="password" required>
+                <input type="password" name="password" class="form-control" required>
             </div>
             <div>
-                <button type="submit" name="login_btn">Login</button>
+                <button type="submit" name="login_btn" class="btn btn-primary">Login</button>
             </div>
             <?php if (isset($_SESSION['message'])): ?>
-                <div><?php echo $_SESSION['message']; unset($_SESSION['message']); ?></div>
+                <div class="alert alert-danger mt-3"><?php echo $_SESSION['message']; unset($_SESSION['message']); ?></div>
             <?php endif; ?>
         </form>
     </main>
+    <?php include 'footer.php'; ?>
 </body>
 </html>

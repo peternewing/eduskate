@@ -8,39 +8,39 @@ if (!isset($_SESSION['username'])) {
 include 'database.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_quiz_btn'])) {
-    $quiz_name = $link->real_escape_string($_POST['quiz_name']);
+    $quiz_name = $conn->real_escape_string($_POST['quiz_name']);
     $user_id = $_SESSION['user_id'];
     $query = "INSERT INTO quizzes (name, user_id) VALUES ('$quiz_name', '$user_id')";
     
-    if ($link->query($query) === TRUE) {
+    if ($conn->query($query) === TRUE) {
         echo "New quiz created successfully";
     } else {
-        echo "Error: " . $query . "<br>" . $link->error;
+        echo "Error: " . $query . "<br>" . $conn->error;
     }
 }
 
 $user_id = $_SESSION['user_id'];
 $quizzesQuery = "SELECT * FROM quizzes WHERE user_id='$user_id'";
-$quizzesResult = $link->query($quizzesQuery);
+$quizzesResult = $conn->query($quizzesQuery);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_question_btn'])) {
-    $quiz_id = $link->real_escape_string($_POST['quiz_id']);
-    $question = $link->real_escape_string($_POST['question']);
-    $answer1 = $link->real_escape_string($_POST['answer1']);
-    $answer2 = $link->real_escape_string($_POST['answer2']);
-    $answer3 = $link->real_escape_string($_POST['answer3']);
-    $answer4 = $link->real_escape_string($_POST['answer4']);
-    $correct_answer = $link->real_escape_string($_POST['correct_answer']);
+    $quiz_id = $conn->real_escape_string($_POST['quiz_id']);
+    $question = $conn->real_escape_string($_POST['question']);
+    $answer1 = $conn->real_escape_string($_POST['answer1']);
+    $answer2 = $conn->real_escape_string($_POST['answer2']);
+    $answer3 = $conn->real_escape_string($_POST['answer3']);
+    $answer4 = $conn->real_escape_string($_POST['answer4']);
+    $correct_answer = $conn->real_escape_string($_POST['correct_answer']);
     $user_id = $_SESSION['user_id'];
 
     $query = "INSERT INTO quiz_questions (quiz_id, user_id, question, answer1, answer2, answer3, answer4, correct_answer) VALUES ('$quiz_id', '$user_id', '$question', '$answer1', '$answer2', '$answer3', '$answer4', '$correct_answer')";
 
-    if ($link->query($query) === TRUE) {
+    if ($conn->query($query) === TRUE) {
         echo "New question added successfully";
     } else {
-        echo "Error: " . $query . "<br>" . $link->error;
+        echo "Error: " . $query . "<br>" . $conn->error;
     }
-    $link->close();
+    $conn->close();
 }
 ?>
 
@@ -48,70 +48,59 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_question_btn'])
 <html>
 <head>
     <title>Quiz Creation Portal</title>
-    <link rel="stylesheet" type="text/css" href="style2.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <header>
-        <h1>Quiz Creation Portal</h1>
-        <nav>
-            <ul>
-                <li><a href="index.php">Home</a></li>
-                <li><a href="quiz.php" class="active">Quiz Creator</a></li>
-                <li><a href="quiz_list.php">Quiz Viewer</a></li>
-                <li><a href="register.php">Register</a></li>
-                <li><a href="logout.php">Log Out</a></li>
-                <li><a href="profile.php">Profile</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
+    <?php include 'header.php'; ?>
+    <main class="container my-4">
         <section>
             <h2>Create a New Quiz</h2>
             <form method="post" action="quiz.php">
-                <div>
+                <div class="form-group">
                     <label>Quiz Name:</label>
-                    <input type="text" name="quiz_name" required>
+                    <input type="text" name="quiz_name" class="form-control" required>
                 </div>
                 <div>
-                    <button type="submit" name="create_quiz_btn">Create Quiz</button>
+                    <button type="submit" name="create_quiz_btn" class="btn btn-primary">Create Quiz</button>
                 </div>
             </form>
         </section>
         <section>
             <h2>Add a Question to a Quiz</h2>
             <form method="post" action="quiz.php">
-                <div>
+                <div class="form-group">
                     <label>Select Quiz:</label>
-                    <select name="quiz_id" required>
+                    <select name="quiz_id" class="form-control" required>
                         <?php while ($quiz = $quizzesResult->fetch_assoc()): ?>
                             <option value="<?php echo $quiz['id']; ?>"><?php echo htmlspecialchars($quiz['name']); ?></option>
                         <?php endwhile; ?>
                     </select>
                 </div>
-                <div>
+                <div class="form-group">
                     <label>Question:</label>
-                    <input type="text" name="question" required>
+                    <input type="text" name="question" class="form-control" required>
                 </div>
-                <div>
+                <div class="form-group">
                     <label>Answer 1:</label>
-                    <input type="text" name="answer1" required>
+                    <input type="text" name="answer1" class="form-control" required>
                 </div>
-                <div>
+                <div class="form-group">
                     <label>Answer 2:</label>
-                    <input type="text" name="answer2" required>
+                    <input type="text" name="answer2" class="form-control" required>
                 </div>
-                <div>
+                <div class="form-group">
                     <label>Answer 3:</label>
-                    <input type="text" name="answer3" required>
+                    <input type="text" name="answer3" class="form-control" required>
                 </div>
-                <div>
+                <div class="form-group">
                     <label>Answer 4:</label>
-                    <input type="text" name="answer4" required>
+                    <input type="text" name="answer4" class="form-control" required>
                 </div>
-                <div>
+                <div class="form-group">
                     <label>Correct Answer:</label>
-                    <select name="correct_answer" required>
+                    <select name="correct_answer" class="form-control" required>
                         <option value="1">Answer 1</option>
                         <option value="2">Answer 2</option>
                         <option value="3">Answer 3</option>
@@ -119,10 +108,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_question_btn'])
                     </select>
                 </div>
                 <div>
-                    <button type="submit" name="submit_question_btn">Submit</button>
+                    <button type="submit" name="submit_question_btn" class="btn btn-primary">Submit</button>
                 </div>
             </form>
         </section>
     </main>
+    <?php include 'footer.php'; ?>
 </body>
 </html>

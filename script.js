@@ -53,3 +53,73 @@ addQuestionButton.addEventListener('click', function () {
     // Add the new question to the question container
     questionContainer.appendChild(newQuestion);
 });
+
+let currentWeek = 'A';
+
+function loadWeek(week) {
+    currentWeek = week;
+    $.ajax({
+        url: 'load_timetable.php',
+        method: 'GET',
+        data: { week: week },
+        success: function(data) {
+            const timetable = JSON.parse(data);
+            renderTimetable(timetable);
+        }
+    });
+}
+
+function renderTimetable(timetable) {
+    const tbody = $('#timetable tbody');
+    tbody.empty();
+
+    for (let period = 1; period <= 6; period++) {
+        const row = $('<tr></tr>');
+        row.append(`<td>${period}</td>`);
+        ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach(day => {
+            const entry = timetable.find(item => item.day === day && item.period === period);
+            const cell = $('<td></td>').data('entry', entry);
+            if (entry) {
+                cell.text(`${entry.subject}\n${entry.room}\n${entry.teacher}`);
+            }
+            cell.on('click', () => editEntry(entry, day, period));
+            row.append(cell);
+        });
+        tbody.append(row);
+    }
+}
+
+function editEntry(entry, day, period) {
+    $('#entryId').val(entry ? entry.id : '');
+    $('#subject').val(entry ? entry.subject : '');
+    $('#room').val(entry ? entry.room : '');
+    $('#teacher').val(entry ? entry.teacher : '');
+    $('#editModal').data('day', day).data('period', period).modal('show');
+}
+
+$('#editForm').on('submit', function(e) {
+    e.preventDefault();
+    const id = $('#entryId').val();
+    const subject = $('#subject').val();
+    const room = $('#room').val();
+    const teacher = $('#teacher').val();
+    const day = $('#editModal').data('day');
+    const period = $('#editModal').data('period');
+
+    $.ajax({
+        url: 'save_timetable.php',
+        method: 'POST',
+        data: { id, subject, room, teacher, day, period, week: currentWeek },
+        success: function() {
+            $('#editModal').modal('hide');
+            loadWeek(currentWeek);
+        }
+    });
+});
+
+// Initial load
+$(document).ready(function() {
+    loadWeek('A');
+});
+
+

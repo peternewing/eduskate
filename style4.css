@@ -1,0 +1,17 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table td {
+    cursor: pointer;
+}
+
+.table td:hover {
+    background-color: #f1f1f1;
+}

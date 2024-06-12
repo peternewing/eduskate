@@ -3,23 +3,21 @@ session_start();
 include 'database.php';
 
 if (!isset($_SESSION['username'])) {
-    echo "<p>Please <a href='login.php'>log in</a> to view your quizzes.</p>";
+    header("Location: login.php");
     exit();
 }
 
-// Fetch the list of quizzes for the logged-in user
 $user_id = $_SESSION['user_id'];
 $quizzesQuery = "SELECT * FROM quizzes WHERE user_id='$user_id'";
-$quizzesResult = $link->query($quizzesQuery);
+$quizzesResult = $conn->query($quizzesQuery);
 
-$selected_quiz_id = isset($_POST['quiz_id']) ? $link->real_escape_string($_POST['quiz_id']) : '';
+$selected_quiz_id = isset($_POST['quiz_id']) ? $conn->real_escape_string($_POST['quiz_id']) : '';
 
-// Fetch the questions for the selected quiz
 $query = "SELECT * FROM quiz_questions WHERE quiz_id='$selected_quiz_id'";
-$result = $link->query($query);
+$result = $conn->query($query);
 
 if (!$result) {
-    die("Error: " . $link->error);
+    die("Error: " . $conn->error);
 }
 
 $questions = [];
@@ -34,28 +32,17 @@ if ($result->num_rows > 0) {
 <html>
 <head>
     <title>Quiz Viewer</title>
-    <link rel="stylesheet" type="text/css" href="style2.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <header>
-        <h1>Quiz Viewer</h1>
-        <nav>
-            <ul>
-                <li><a href="index.php">Home</a></li>
-                <li><a href="quiz.php">Quiz Creator</a></li>
-                <li><a href="quiz_list.php" class="active">Quiz Viewer</a></li>
-                <li><a href="register.php">Register</a></li>
-                <li><a href="logout.php">Log Out</a></li>
-                <li><a href="profile.php">Profile</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
+    <?php include 'header.php'; ?>
+    <main class="container my-4">
         <form method="post" action="quiz_list.php">
-            <div>
+            <div class="form-group">
                 <label>Select Quiz:</label>
-                <select name="quiz_id" onchange="this.form.submit()">
+                <select name="quiz_id" class="form-control" onchange="this.form.submit()">
                     <option value="">Select a quiz</option>
                     <?php while ($quiz = $quizzesResult->fetch_assoc()): ?>
                         <option value="<?php echo $quiz['id']; ?>" <?php if ($quiz['id'] == $selected_quiz_id) echo 'selected'; ?>>
@@ -70,15 +57,27 @@ if ($result->num_rows > 0) {
             <form method="post" action="quiz_list.php">
                 <input type="hidden" name="quiz_id" value="<?php echo $selected_quiz_id; ?>">
                 <?php foreach ($questions as $question): ?>
-                    <div>
+                    <div class="form-group">
                         <h3>Question: <?php echo htmlspecialchars($question["question"]); ?></h3>
-                        <input type="radio" name="question_<?php echo $question['id']; ?>" value="1"> <?php echo htmlspecialchars($question["answer1"]); ?><br>
-                        <input type="radio" name="question_<?php echo $question['id']; ?>" value="2"> <?php echo htmlspecialchars($question["answer2"]); ?><br>
-                        <input type="radio" name="question_<?php echo $question['id']; ?>" value="3"> <?php echo htmlspecialchars($question["answer3"]); ?><br>
-                        <input type="radio" name="question_<?php echo $question['id']; ?>" value="4"> <?php echo htmlspecialchars($question["answer4"]); ?><br>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="question_<?php echo $question['id']; ?>" value="1">
+                            <label class="form-check-label"><?php echo htmlspecialchars($question["answer1"]); ?></label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="question_<?php echo $question['id']; ?>" value="2">
+                            <label class="form-check-label"><?php echo htmlspecialchars($question["answer2"]); ?></label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="question_<?php echo $question['id']; ?>" value="3">
+                            <label class="form-check-label"><?php echo htmlspecialchars($question["answer3"]); ?></label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="question_<?php echo $question['id']; ?>" value="4">
+                            <label class="form-check-label"><?php echo htmlspecialchars($question["answer4"]); ?></label>
+                        </div>
                     </div>
                 <?php endforeach; ?>
-                <button type="submit" name="submit_quiz">Submit Answers</button>
+                <button type="submit" name="submit_quiz" class="btn btn-primary">Submit Answers</button>
             </form>
         <?php elseif ($selected_quiz_id): ?>
             <p>No questions available for this quiz.</p>
@@ -88,9 +87,9 @@ if ($result->num_rows > 0) {
         if (isset($_POST['submit_quiz'])) {
             include 'database.php';
 
-            $selected_quiz_id = $link->real_escape_string($_POST['quiz_id']);
+            $selected_quiz_id = $conn->real_escape_string($_POST['quiz_id']);
             $query = "SELECT * FROM quiz_questions WHERE quiz_id='$selected_quiz_id'";
-            $result = $link->query($query);
+            $result = $conn->query($query);
 
             $score = 0;
             $total_questions = $result->num_rows;
@@ -121,16 +120,17 @@ if ($result->num_rows > 0) {
 
             echo "</ul>";
             echo "<h3>Your score: $score / $total_questions</h3>";
-            $link->close();
+            $conn->close();
         }
         ?>
 
         <?php if (isset($_POST['submit_quiz'])): ?>
             <form method="post" action="quiz_list.php">
                 <input type="hidden" name="quiz_id" value="<?php echo $selected_quiz_id; ?>">
-                <button type="submit">Reset Answers</button>
+                <button type="submit" class="btn btn-secondary">Reset Answers</button>
             </form>
         <?php endif; ?>
     </main>
+    <?php include 'footer.php'; ?>
 </body>
 </html>
