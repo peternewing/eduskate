@@ -40,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_question_btn'])
     } else {
         echo "Error: " . $query . "<br>" . $conn->error;
     }
-    $conn->close();
 }
 ?>
 

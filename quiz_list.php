@@ -132,5 +132,18 @@ if ($result->num_rows > 0) {
         <?php endif; ?>
     </main>
     <?php include 'footer.php'; ?>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
+        const highlightType = localStorage.getItem('highlightType');
+        const highlightId = localStorage.getItem('highlightId');
+
+        if (highlightType === 'quiz' && highlightId) {
+            $(`tr[data-entry-id="${highlightId}"]`).css('background-color', 'yellow');
+            localStorage.removeItem('highlightType');
+            localStorage.removeItem('highlightId');
+        }
+    </script>
 </body>
 </html>

@@ -1,5 +1,3 @@
-/* Combine styles from style1.css, style2.css, style3.css, and style4.css */
-
 /* Reset default browser styles */
 * {
     box-sizing: border-box;
@@ -30,7 +28,6 @@ nav ul {
     margin: 10px 0 0;
     padding: 0;
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
 }
 
@@ -199,95 +196,4 @@ footer {
         font-size: 1em;
         padding: 10px 20px;
     }
-}
-
-/* Additional styles from style2.css, style3.css, and style4.css */
-
-/* Style form elements */
-form div {
-    margin-bottom: 20px;
-}
-
-form label {
-    display: block;
-    font-size: 18px; /* Larger font for readability */
-    margin-bottom: 10px;
-}
-
-form input[type="text"], input[type="email"], input[type="password"], select {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-form button {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    background-color: #005A9C;
-    border: none;
-    border-radius: 4px;
-    color: #fff;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-form button:hover {
-    background-color: #004080;
-}
-
-@media (max-width: 600px) {
-    body {
-        padding: 10px;
-        max-width: none;
-    }
-
-    header h1 {
-        font-size: 20px;
-    }
-}
-
-main {
-    max-width: none; /* Allows flexibility on mobile */
-    text-align: center;
-}
-
-section {
-    margin-bottom: 20px;
-}
-
-section h2 {
-    font-size: 24px; /* Smaller for mobile */
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-section p {
-    font-size: 16px; /* Smaller font size for mobile */
-    margin-bottom: 5px;
-}
-
-@media (max-width: 600px) {
-    body, main {
-        padding: 10px;
-    }
-
-    header h1, section h2 {
-        font-size: 20px;
-    }
-}
-
-.table th, .table td {
-    text-align: center;
-    vertical-align: middle;
-}
-
-.table td {
-    cursor: pointer;
-}
-
-.table td:hover {
-    background-color: #f1f1f1;
 }

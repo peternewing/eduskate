@@ -51,7 +51,7 @@ $result = $stmt->get_result();
             </thead>
             <tbody>
                 <?php while ($row = $result->fetch_assoc()): ?>
-                    <tr>
+                    <tr data-entry-id="<?php echo $row['id']; ?>" onclick="highlightEntry('homework', <?php echo $row['id']; ?>)">
                         <td><?php echo htmlspecialchars($row['subject']); ?></td>
                         <td><?php echo htmlspecialchars($row['description']); ?></td>
                         <td><?php echo htmlspecialchars($row['due_date']); ?></td>
@@ -182,6 +182,22 @@ $result = $stmt->get_result();
                     location.reload();
                 }
             });
+        });
+
+        function highlightEntry(type, id) {
+            localStorage.setItem('highlightType', type);
+            localStorage.setItem('highlightId', id);
+        }
+
+        $(document).ready(function() {
+            const highlightType = localStorage.getItem('highlightType');
+            const highlightId = localStorage.getItem('highlightId');
+
+            if (highlightType === 'homework' && highlightId) {
+                $('tr[data-entry-id="' + highlightId + '"]').css('background-color', 'yellow');
+                localStorage.removeItem('highlightType');
+                localStorage.removeItem('highlightId');
+            }
         });
     </script>
 </body>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interactive Timetable</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style4.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Interactive Timetable</h1>
+        <div class="btn-group mb-3" role="group">
+            <button type="button" class="btn btn-primary" onclick="loadWeek('A')">Week A</button>
+            <button type="button" class="btn btn-secondary" onclick="loadWeek('B')">Week B</button>
+        </div>
+        <table class="table table-bordered" id="timetable">
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                    <th>Thursday</th>
+                    <th>Friday</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Timetable cells will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal for editing timetable entries -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Timetable Entry</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <input type="hidden" id="entryId">
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" class="form-control" id="subject">
+                        </div>
+                        <div class="form-group">
+                            <label for="room">Room</label>
+                            <input type="text" class="form-control" id="room">
+                        </div>
+                        <div class="form-group">
+                            <label for="teacher">Teacher</label>
+                            <input type="text" class="form-control" id="teacher">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

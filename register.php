@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 include 'database.php';
 
 if (isset($_POST['register_btn'])) {
@@ -45,39 +47,39 @@ if (isset($_POST['register_btn'])) {
 <html>
 <head>
     <title>Registration Form</title>
-    <link rel="stylesheet" type="text/css" href="style2.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
     <?php include 'header.php'; ?>
-    <main>
+    <main class="container my-4">
+        <h2>Registration Form</h2>
         <form method="post" action="register.php">
-            <div>
+            <div class="form-group">
                 <label>Username:</label>
-                <input type="text" name="username" required>
+                <input type="text" name="username" class="form-control" required>
             </div>
-            <div>
+            <div class="form-group">
                 <label>Email:</label>
-                <input type="email" name="email" required>
+                <input type="email" name="email" class="form-control" required>
             </div>
-            <div>
+            <div class="form-group">
                 <label>Password:</label>
-                <input type="password" name="password" required>
+                <input type="password" name="password" class="form-control" required>
             </div>
-            <div>
+            <div class="form-group">
                 <label>Confirm Password:</label>
-                <input type="password" name="password2" required>
+                <input type="password" name="password2" class="form-control" required>
             </div>
-            <div>
+            <div class="form-group">
                 <label>Type:</label>
-                <select name="type" required>
+                <select name="type" class="form-control" required>
                     <option value="student">Student</option>
                     <option value="teacher">Teacher</option>
                 </select>
             </div>
-            <div>
-                <button type="submit" name="register_btn">Register</button>
-            </div>
+            <button type="submit" name="register_btn" class="btn btn-primary">Register</button>
         </form>
     </main>
     <?php include 'footer.php'; ?>

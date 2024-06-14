@@ -11,6 +11,11 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
+
+$stmt = $conn->prepare("SELECT id, day, period, subject, room, teacher, week FROM timetable WHERE user_id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$timetableResult = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -71,11 +76,9 @@ $user_id = $_SESSION['user_id'];
                             <label for="teacher">Teacher</label>
                             <input type="text" class="form-control" id="teacher">
                         </div>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-danger" onclick="deleteEntry()">Delete</button>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" form="editForm">Save changes</button>
-                    <button type="button" class="btn btn-danger" onclick="deleteEntry()">Delete</button>
                 </div>
             </div>
         </div>
@@ -164,26 +167,27 @@ $user_id = $_SESSION['user_id'];
                 row.append(`<td>${period}</td>`);
                 ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach(day => {
                     const entry = timetable.find(item => item.day === day && item.period == period);
-                    const cell = $('<td></td>').data('entry', entry);
+                    const cell = $('<td></td>').data('entry', entry).data('day', day).data('period', period);
                     if (entry) {
                         cell.text(`${entry.subject}\n${entry.room}\n${entry.teacher}`);
                     }
-                    cell.on('click', () => handleCellClick(entry, day, period));
+                    cell.on('click', () => editEntry(entry, day, period));
                     row.append(cell);
                 });
                 tbody.append(row);
             }
-        }
 
-        function handleCellClick(entry, day, period) {
-            if (entry) {
-                showEditEntryModal(entry, day, period);
-            } else {
-                showAddEntryModal(day, period, currentWeek);
+            const highlightType = localStorage.getItem('highlightType');
+            const highlightId = localStorage.getItem('highlightId');
+
+            if (highlightType === 'timetable' && highlightId) {
+                $(`td[data-entry-id="${highlightId}"]`).css('background-color', 'yellow');
+                localStorage.removeItem('highlightType');
+                localStorage.removeItem('highlightId');
             }
         }
 
-        function showEditEntryModal(entry, day, period) {
+        function editEntry(entry, day, period) {
             $('#entryId').val(entry ? entry.id : '');
             $('#subject').val(entry ? entry.subject : '');
             $('#room').val(entry ? entry.room : '');
@@ -211,27 +215,7 @@ $user_id = $_SESSION['user_id'];
             });
         });
 
-        function deleteEntry() {
-            const id = $('#entryId').val();
-
-            $.ajax({
-                url: 'delete_timetable.php',
-                method: 'POST',
-                data: { id },
-                success: function() {
-                    $('#editModal').modal('hide');
-                    loadWeek(currentWeek);
-                }
-            });
-        }
-
-        function showAddEntryModal(day = '', period = '', week = currentWeek) {
-            $('#addDay').val(day);
-            $('#addPeriod').val(period);
-            $('#addWeek').val(week);
-            $('#addSubject').val('');
-            $('#addRoom').val('');
-            $('#addTeacher').val('');
+        function showAddEntryModal() {
             $('#addModal').modal('show');
         }
 
@@ -255,7 +239,21 @@ $user_id = $_SESSION['user_id'];
             });
         });
 
-        // Initial load
+        function deleteEntry() {
+            const id = $('#entryId').val();
+            if (confirm('Are you sure you want to delete this entry?')) {
+                $.ajax({
+                    url: 'delete_timetable.php',
+                    method: 'POST',
+                    data: { id },
+                    success: function() {
+                        $('#editModal').modal('hide');
+                        loadWeek(currentWeek);
+                    }
+                });
+            }
+        }
+
         $(document).ready(function() {
             loadWeek('A');
         });
