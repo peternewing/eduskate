@@ -11,7 +11,7 @@ $user_id = $_SESSION['user_id'];
 $quizzesQuery = "SELECT * FROM quizzes WHERE user_id='$user_id'";
 $quizzesResult = $conn->query($quizzesQuery);
 
-$selected_quiz_id = isset($_POST['quiz_id']) ? $conn->real_escape_string($_POST['quiz_id']) : '';
+$selected_quiz_id = isset($_GET['highlight_id']) ? $conn->real_escape_string($_GET['highlight_id']) : (isset($_POST['quiz_id']) ? $conn->real_escape_string($_POST['quiz_id']) : '');
 
 $query = "SELECT * FROM quiz_questions WHERE quiz_id='$selected_quiz_id'";
 $result = $conn->query($query);
@@ -132,18 +132,5 @@ if ($result->num_rows > 0) {
         <?php endif; ?>
     </main>
     <?php include 'footer.php'; ?>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script>
-        const highlightType = localStorage.getItem('highlightType');
-        const highlightId = localStorage.getItem('highlightId');
-
-        if (highlightType === 'quiz' && highlightId) {
-            $(`tr[data-entry-id="${highlightId}"]`).css('background-color', 'yellow');
-            localStorage.removeItem('highlightType');
-            localStorage.removeItem('highlightId');
-        }
-    </script>
 </body>
 </html>

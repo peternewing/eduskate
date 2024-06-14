@@ -76,7 +76,7 @@ if ($isLoggedIn) {
                     </thead>
                     <tbody>
                         <?php while ($row = $timetableResult->fetch_assoc()): ?>
-                            <tr data-entry-id="<?php echo $row['id']; ?>" onclick="highlightTimetableEntry(<?php echo $row['id']; ?>)">
+                            <tr data-entry-id="<?php echo $row['id']; ?>" onclick="highlightTimetableEntry(<?php echo $row['id']; ?>, '<?php echo $row['week']; ?>')">
                                 <td><?php echo htmlspecialchars($row['day']); ?></td>
                                 <td><?php echo htmlspecialchars($row['period']); ?></td>
                                 <td><?php echo htmlspecialchars($row['subject']); ?></td>
@@ -169,22 +169,23 @@ if ($isLoggedIn) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script>
-        function highlightTimetableEntry(id) {
+        function highlightTimetableEntry(id, week) {
             localStorage.setItem('highlightType', 'timetable');
             localStorage.setItem('highlightId', id);
-            window.location.href = 'timetable.php';
+            localStorage.setItem('highlightWeek', week);
+            window.location.href = 'timetable.php?highlight_id=' + id + '&highlight_week=' + week;
         }
 
         function highlightHomeworkEntry(id) {
             localStorage.setItem('highlightType', 'homework');
             localStorage.setItem('highlightId', id);
-            window.location.href = 'homework.php';
+            window.location.href = 'homework.php?highlight_id=' + id;
         }
 
         function highlightQuizEntry(id) {
             localStorage.setItem('highlightType', 'quiz');
             localStorage.setItem('highlightId', id);
-            window.location.href = 'quiz_list.php';
+            window.location.href = 'quiz_list.php?highlight_id=' + id;
         }
     </script>
 </body>

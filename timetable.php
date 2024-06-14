@@ -16,6 +16,9 @@ $stmt = $conn->prepare("SELECT id, day, period, subject, room, teacher, week FRO
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $timetableResult = $stmt->get_result();
+
+$highlightId = isset($_GET['highlight_id']) ? $_GET['highlight_id'] : null;
+$highlightWeek = isset($_GET['highlight_week']) ? $_GET['highlight_week'] : 'A';
 ?>
 
 <!DOCTYPE html>
@@ -143,7 +146,7 @@ $timetableResult = $stmt->get_result();
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script>
-        let currentWeek = 'A';
+        let currentWeek = '<?php echo $highlightWeek; ?>';
 
         function loadWeek(week) {
             currentWeek = week;
@@ -170,20 +173,14 @@ $timetableResult = $stmt->get_result();
                     const cell = $('<td></td>').data('entry', entry).data('day', day).data('period', period);
                     if (entry) {
                         cell.text(`${entry.subject}\n${entry.room}\n${entry.teacher}`);
+                        if (entry.id == '<?php echo $highlightId; ?>') {
+                            cell.css('background-color', 'yellow');
+                        }
                     }
                     cell.on('click', () => editEntry(entry, day, period));
                     row.append(cell);
                 });
                 tbody.append(row);
-            }
-
-            const highlightType = localStorage.getItem('highlightType');
-            const highlightId = localStorage.getItem('highlightId');
-
-            if (highlightType === 'timetable' && highlightId) {
-                $(`td[data-entry-id="${highlightId}"]`).css('background-color', 'yellow');
-                localStorage.removeItem('highlightType');
-                localStorage.removeItem('highlightId');
             }
         }
 
@@ -255,7 +252,7 @@ $timetableResult = $stmt->get_result();
         }
 
         $(document).ready(function() {
-            loadWeek('A');
+            loadWeek(currentWeek);
         });
     </script>
 </body>
