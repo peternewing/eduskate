@@ -47,6 +47,8 @@ if (isset($_POST['login_btn'])) {
                 <label>Password:</label>
                 <input type="password" name="password" class="form-control" required>
             </div>
+          <a href="forgot_password.php">Forgot your password?</a>
+
             <div>
                 <button type="submit" name="login_btn" class="btn btn-primary">Login</button>
             </div>
